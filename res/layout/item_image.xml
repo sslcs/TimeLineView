@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.com.sslcs.sslcs.test.CircleImageView
+        android:id="@+id/iv_banner"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:src="@drawable/default_banner"/>
+    <View
+        android:id="@+id/v_mask"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/iv_banner"
+        android:layout_alignRight="@id/iv_banner"
+        android:layout_alignBottom="@id/iv_banner"
+        android:layout_alignTop="@id/iv_banner"
+        android:background="#90000000"/>
+    <ImageView
+        android:id="@+id/iv_lock"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/ic_lock_lesson"/>
+</RelativeLayout>

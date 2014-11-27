@@ -1,0 +1,6 @@
+<resources>
+    <dimen name="line_width">5dp</dimen>
+    <dimen name="radius_dot">10dp</dimen>
+    <dimen name="radius_image">36dp</dimen>
+    <dimen name="margin">50dp</dimen>
+</resources>
