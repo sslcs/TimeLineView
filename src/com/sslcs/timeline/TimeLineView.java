@@ -1,7 +1,6 @@
 package com.sslcs.timeline;
 
 import android.content.Context;
-import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -16,23 +15,26 @@ import android.widget.RelativeLayout;
  */
 public class TimeLineView extends RelativeLayout
 {
-//    private final DataSetObserver mObserver = new DataSetObserver()
-//    {
-//        @Override
-//        public void onChanged()
-//        {
-//            System.out.println("TimeLineView.onChanged");
-//            refreshViewsFromAdapter();
-//        }
-//
-//        @Override
-//        public void onInvalidated()
-//        {
-//            System.out.println("TimeLineView.onInvalidated");
-//            removeAllViews();
-//        }
-//    };
-    private int mColor = 0xffe4e4e4;
+    private final float mDensity = getResources().getDisplayMetrics().density;
+    private int mPosition = 0;
+    //    private final DataSetObserver mObserver = new DataSetObserver()
+    //    {
+    //        @Override
+    //        public void onChanged()
+    //        {
+    //            System.out.println("TimeLineView.onChanged");
+    //            refreshViewsFromAdapter();
+    //        }
+    //
+    //        @Override
+    //        public void onInvalidated()
+    //        {
+    //            System.out.println("TimeLineView.onInvalidated");
+    //            removeAllViews();
+    //        }
+    //    };
+    private int mPipeColor = 0xffe4e4e4;
+    private int mWaterColor = 0xffff0000;
     private Paint mPaint = new Paint();
     private int mLineWidth, mMargin, mRadiusDot, mRadiusImage;
     private Adapter mAdapter = null;
@@ -54,13 +56,13 @@ public class TimeLineView extends RelativeLayout
         if (null != mAdapter)
         {
             System.out.println("TimeLineView.setAdapter unregisterDataSetObserver");
-//            mAdapter.unregisterDataSetObserver(mObserver);
+            //            mAdapter.unregisterDataSetObserver(mObserver);
         }
         mAdapter = adapter;
         if (null != mAdapter)
         {
             System.out.println("TimeLineView.setAdapter registerDataSetObserver");
-//            mAdapter.registerDataSetObserver(mObserver);
+            //            mAdapter.registerDataSetObserver(mObserver);
         }
         initViewsFromAdapter();
     }
@@ -90,8 +92,10 @@ public class TimeLineView extends RelativeLayout
         super.onLayout(changed, l, t, r, b);
         String data = String.format("changed : %b,%d,%d,%d,%d", changed, l, t, r, b);
         System.out.println("changed = " + data);
-        if(changed)
-        refreshViewsFromAdapter();
+        if (changed)
+        {
+            refreshViewsFromAdapter();
+        }
     }
 
     private void initViewsFromAdapter()
@@ -115,13 +119,13 @@ public class TimeLineView extends RelativeLayout
         System.out.println("TimeLineView.addView pos : " + pos);
         View view = mAdapter.getView(pos, null, this);
         LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        int marginTop = (1 + pos * 2) * mMargin - mRadiusImage;
+        int marginTop = (1 + pos * 2) * mMargin - mRadiusImage - 40;
         int marginLeft = pos % 2 == 0 ? getWidth() / 4 : getWidth() * 3 / 4;
         String data = String.format("marginTop:%d,marginLeft:%d,width:%d,height:%d", marginTop, marginLeft, view.getWidth(), view.getHeight());
         System.out.println("data = " + data);
         params.setMargins(marginLeft - mRadiusImage, marginTop, 0, 0);
         view.setBackgroundColor(Color.RED);
-        view.setPadding(10,10,10,10);
+        view.setPadding(10, 40, 10, 40);
         addView(view, params);
 
         if (null == mListener)
@@ -138,9 +142,22 @@ public class TimeLineView extends RelativeLayout
         });
     }
 
-    public void setColor(int color)
+    public void setPipeColor(int color)
     {
-        mColor = color;
+        mPipeColor = color;
+        invalidate();
+    }
+
+    public void setWaterColor(int color)
+    {
+        mWaterColor = color;
+        invalidate();
+    }
+
+    public void setCurrentPosition(int position)
+    {
+        mPosition = position;
+        invalidate();
     }
 
     @Override
@@ -152,12 +169,30 @@ public class TimeLineView extends RelativeLayout
             return;
         }
 
-        mPaint.setColor(mColor);
+        mPaint.setColor(mPipeColor);
         mPaint.setStrokeWidth(mLineWidth);
         canvas.drawLine(getWidth() / 2, 0, getWidth() / 2, getHeight(), mPaint);
 
         int margin, count = mAdapter.getCount();
         for (int i = 0; i < count; i++)
+        {
+            margin = (1 + i * 2) * mMargin;
+            canvas.drawCircle(getWidth() / 2, margin, mRadiusDot, mPaint);
+
+            if (i % 2 == 0)
+            {
+                canvas.drawLine(getWidth() / 4, margin, getWidth() / 2, margin, mPaint);
+            }
+            else
+            {
+                canvas.drawLine(getWidth() / 2, margin, getWidth() * 3 / 4, margin, mPaint);
+            }
+        }
+
+        mPaint.setColor(mWaterColor);
+        int height = (1 + mPosition * 2) * mMargin;
+        canvas.drawLine(getWidth() / 2, 0, getWidth() / 2, height, mPaint);
+        for (int i = 0; i <= mPosition; i++)
         {
             margin = (1 + i * 2) * mMargin;
             canvas.drawCircle(getWidth() / 2, margin, mRadiusDot, mPaint);

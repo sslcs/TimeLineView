@@ -43,13 +43,14 @@ public class TimeLineFragment extends Fragment
 
     private void initLayout(View view)
     {
-        TimeLineView timeLineView = (TimeLineView) view.findViewById(R.id.time_line);
+        final TimeLineView timeLineView = (TimeLineView) view.findViewById(R.id.time_line);
         timeLineView.setOnItemClickListener(new TimeLineView.OnItemClickListener()
         {
             @Override
             public void onItemClick(int pos)
             {
-                mListener.replace();
+                timeLineView.setCurrentPosition(pos);
+//                mListener.replace();
             }
         });
         QuickAdapter<String> adapter = new QuickAdapter<String>(getActivity(), R.layout.item_image)
