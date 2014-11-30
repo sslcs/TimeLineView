@@ -1,4 +1,4 @@
-package com.sslcs.test;
+package com.sslcs.smaple;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.joanzapata.android.BaseAdapterHelper;
 import com.joanzapata.android.QuickAdapter;
+import com.sslcs.timeline.R;
+import com.sslcs.timeline.TimeLineView;
 
 /**
  * Created by CS on 2014/11/24 16:15.
@@ -41,7 +43,6 @@ public class TimeLineFragment extends Fragment
 
     private void initLayout(View view)
     {
-        System.out.println("TimeLineFragment.initLayout");
         TimeLineView timeLineView = (TimeLineView) view.findViewById(R.id.time_line);
         timeLineView.setOnItemClickListener(new TimeLineView.OnItemClickListener()
         {

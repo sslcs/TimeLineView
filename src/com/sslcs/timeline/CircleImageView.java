@@ -1,4 +1,4 @@
-package com.sslcs.test;
+package com.sslcs.timeline;
 
 import android.content.Context;
 import android.content.res.TypedArray;

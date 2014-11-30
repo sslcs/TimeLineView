@@ -1,4 +1,4 @@
-package com.sslcs.test;
+package com.sslcs.smaple;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import com.sslcs.timeline.R;
 
 /**
  * Created by CS on 2014/11/13 9:33.

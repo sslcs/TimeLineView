@@ -1,8 +1,9 @@
-package com.sslcs.test;
+package com.sslcs.timeline;
 
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
@@ -15,20 +16,22 @@ import android.widget.RelativeLayout;
  */
 public class TimeLineView extends RelativeLayout
 {
-    private final DataSetObserver mObserver = new DataSetObserver()
-    {
-        @Override
-        public void onChanged()
-        {
-            refreshViewsFromAdapter();
-        }
-
-        @Override
-        public void onInvalidated()
-        {
-            removeAllViews();
-        }
-    };
+//    private final DataSetObserver mObserver = new DataSetObserver()
+//    {
+//        @Override
+//        public void onChanged()
+//        {
+//            System.out.println("TimeLineView.onChanged");
+//            refreshViewsFromAdapter();
+//        }
+//
+//        @Override
+//        public void onInvalidated()
+//        {
+//            System.out.println("TimeLineView.onInvalidated");
+//            removeAllViews();
+//        }
+//    };
     private int mColor = 0xffe4e4e4;
     private Paint mPaint = new Paint();
     private int mLineWidth, mMargin, mRadiusDot, mRadiusImage;
@@ -50,12 +53,14 @@ public class TimeLineView extends RelativeLayout
     {
         if (null != mAdapter)
         {
-            mAdapter.unregisterDataSetObserver(mObserver);
+            System.out.println("TimeLineView.setAdapter unregisterDataSetObserver");
+//            mAdapter.unregisterDataSetObserver(mObserver);
         }
         mAdapter = adapter;
         if (null != mAdapter)
         {
-            mAdapter.registerDataSetObserver(mObserver);
+            System.out.println("TimeLineView.setAdapter registerDataSetObserver");
+//            mAdapter.registerDataSetObserver(mObserver);
         }
         initViewsFromAdapter();
     }
@@ -64,15 +69,34 @@ public class TimeLineView extends RelativeLayout
     protected void onSizeChanged(int w, int h, int oldw, int oldh)
     {
         super.onSizeChanged(w, h, oldw, oldh);
+        if (w == 0 || h == 0)
+        {
+            return;
+        }
+
+        String size = String.format("w:%d,h:%d,oldw:%d,oldh:%d", w, h, oldw, oldh);
+        System.out.println("size = " + size);
         if (isInEditMode())
         {
             return;
         }
+
+        requestLayout();
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b)
+    {
+        super.onLayout(changed, l, t, r, b);
+        String data = String.format("changed : %b,%d,%d,%d,%d", changed, l, t, r, b);
+        System.out.println("changed = " + data);
+        if(changed)
         refreshViewsFromAdapter();
     }
 
     private void initViewsFromAdapter()
     {
+        System.out.println("TimeLineView.initViewsFromAdapter");
         removeAllViews();
         if (null == mAdapter)
         {
@@ -88,11 +112,16 @@ public class TimeLineView extends RelativeLayout
 
     private void addView(final int pos)
     {
+        System.out.println("TimeLineView.addView pos : " + pos);
         View view = mAdapter.getView(pos, null, this);
         LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         int marginTop = (1 + pos * 2) * mMargin - mRadiusImage;
         int marginLeft = pos % 2 == 0 ? getWidth() / 4 : getWidth() * 3 / 4;
+        String data = String.format("marginTop:%d,marginLeft:%d,width:%d,height:%d", marginTop, marginLeft, view.getWidth(), view.getHeight());
+        System.out.println("data = " + data);
         params.setMargins(marginLeft - mRadiusImage, marginTop, 0, 0);
+        view.setBackgroundColor(Color.RED);
+        view.setPadding(10,10,10,10);
         addView(view, params);
 
         if (null == mListener)
@@ -160,6 +189,7 @@ public class TimeLineView extends RelativeLayout
 
     private void refreshViewsFromAdapter()
     {
+        System.out.println("TimeLineView.refreshViewsFromAdapter");
         int childCount = getChildCount();
         int adapterSize = mAdapter.getCount();
         int reuseCount = Math.min(childCount, adapterSize);

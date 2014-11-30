@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <com.com.sslcs.sslcs.test.CircleImageView
+    <com.sslcs.timeline.CircleImageView
         android:id="@+id/iv_banner"
         android:layout_width="72dp"
         android:layout_height="72dp"
