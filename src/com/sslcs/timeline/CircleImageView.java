@@ -12,12 +12,9 @@ import android.widget.ImageView;
 
 public class CircleImageView extends ImageView
 {
-
     private static final ScaleType SCALE_TYPE = ScaleType.CENTER_CROP;
-
     private static final Bitmap.Config BITMAP_CONFIG = Bitmap.Config.ARGB_8888;
     private static final int COLORDRAWABLE_DIMENSION = 1;
-
     private static final int DEFAULT_BORDER_WIDTH = 0;
     private int mBorderWidth = DEFAULT_BORDER_WIDTH;
     private static final int DEFAULT_BORDER_COLOR = Color.BLACK;
@@ -31,10 +28,8 @@ public class CircleImageView extends ImageView
     private BitmapShader mBitmapShader;
     private int mBitmapWidth;
     private int mBitmapHeight;
-
     private float mDrawableRadius;
     private float mBorderRadius;
-
     private boolean mReady;
     private boolean mSetupPending;
 

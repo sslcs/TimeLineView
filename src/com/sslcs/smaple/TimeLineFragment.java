@@ -50,7 +50,7 @@ public class TimeLineFragment extends Fragment
             public void onItemClick(int pos)
             {
                 timeLineView.setCurrentPosition(pos);
-//                mListener.replace();
+                mListener.replace();
             }
         });
         QuickAdapter<String> adapter = new QuickAdapter<String>(getActivity(), R.layout.item_image)

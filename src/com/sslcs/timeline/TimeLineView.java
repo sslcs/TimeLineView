@@ -2,7 +2,6 @@ package com.sslcs.timeline;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
@@ -15,24 +14,7 @@ import android.widget.RelativeLayout;
  */
 public class TimeLineView extends RelativeLayout
 {
-    private final float mDensity = getResources().getDisplayMetrics().density;
     private int mPosition = 0;
-    //    private final DataSetObserver mObserver = new DataSetObserver()
-    //    {
-    //        @Override
-    //        public void onChanged()
-    //        {
-    //            System.out.println("TimeLineView.onChanged");
-    //            refreshViewsFromAdapter();
-    //        }
-    //
-    //        @Override
-    //        public void onInvalidated()
-    //        {
-    //            System.out.println("TimeLineView.onInvalidated");
-    //            removeAllViews();
-    //        }
-    //    };
     private int mPipeColor = 0xffe4e4e4;
     private int mWaterColor = 0xffff0000;
     private Paint mPaint = new Paint();
@@ -53,54 +35,41 @@ public class TimeLineView extends RelativeLayout
 
     public void setAdapter(Adapter adapter)
     {
-        if (null != mAdapter)
-        {
-            System.out.println("TimeLineView.setAdapter unregisterDataSetObserver");
-            //            mAdapter.unregisterDataSetObserver(mObserver);
-        }
         mAdapter = adapter;
-        if (null != mAdapter)
-        {
-            System.out.println("TimeLineView.setAdapter registerDataSetObserver");
-            //            mAdapter.registerDataSetObserver(mObserver);
-        }
         initViewsFromAdapter();
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh)
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
     {
-        super.onSizeChanged(w, h, oldw, oldh);
-        if (w == 0 || h == 0)
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (null == mAdapter)
         {
             return;
         }
 
-        String size = String.format("w:%d,h:%d,oldw:%d,oldh:%d", w, h, oldw, oldh);
-        System.out.println("size = " + size);
-        if (isInEditMode())
-        {
-            return;
-        }
-
-        requestLayout();
+        int sizeWidth = MeasureSpec.getSize(widthMeasureSpec);
+        int sizeHeight = mAdapter.getCount() * mMargin * 2;
+        setMeasuredDimension(sizeWidth, sizeHeight);
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b)
     {
         super.onLayout(changed, l, t, r, b);
-        String data = String.format("changed : %b,%d,%d,%d,%d", changed, l, t, r, b);
-        System.out.println("changed = " + data);
-        if (changed)
+        int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++)
         {
-            refreshViewsFromAdapter();
+            View child = getChildAt(i);
+            int top = (1 + i * 2) * mMargin - mRadiusImage;
+            int left = i % 2 == 0 ? getWidth() / 4 : getWidth() * 3 / 4;
+            left = left - mRadiusImage;
+            child.layout(left, top, left + child.getWidth(), top + child.getHeight());
         }
     }
 
     private void initViewsFromAdapter()
     {
-        System.out.println("TimeLineView.initViewsFromAdapter");
         removeAllViews();
         if (null == mAdapter)
         {
@@ -116,16 +85,11 @@ public class TimeLineView extends RelativeLayout
 
     private void addView(final int pos)
     {
-        System.out.println("TimeLineView.addView pos : " + pos);
         View view = mAdapter.getView(pos, null, this);
         LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        int marginTop = (1 + pos * 2) * mMargin - mRadiusImage - 40;
+        int marginTop = (1 + pos * 2) * mMargin - mRadiusImage;
         int marginLeft = pos % 2 == 0 ? getWidth() / 4 : getWidth() * 3 / 4;
-        String data = String.format("marginTop:%d,marginLeft:%d,width:%d,height:%d", marginTop, marginLeft, view.getWidth(), view.getHeight());
-        System.out.println("data = " + data);
         params.setMargins(marginLeft - mRadiusImage, marginTop, 0, 0);
-        view.setBackgroundColor(Color.RED);
-        view.setPadding(10, 40, 10, 40);
         addView(view, params);
 
         if (null == mListener)
@@ -205,46 +169,6 @@ public class TimeLineView extends RelativeLayout
             {
                 canvas.drawLine(getWidth() / 2, margin, getWidth() * 3 / 4, margin, mPaint);
             }
-        }
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-    {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        if (null == mAdapter)
-        {
-            return;
-        }
-
-        int sizeWidth = MeasureSpec.getSize(widthMeasureSpec);
-        int sizeHeight = mAdapter.getCount() * mMargin * 2;
-        setMeasuredDimension(sizeWidth, sizeHeight);
-    }
-
-    private void refreshViewsFromAdapter()
-    {
-        System.out.println("TimeLineView.refreshViewsFromAdapter");
-        int childCount = getChildCount();
-        int adapterSize = mAdapter.getCount();
-        int reuseCount = Math.min(childCount, adapterSize);
-
-        removeAllViews();
-        for (int i = 0; i < reuseCount; i++)
-        {
-            addView(i);
-        }
-
-        if (childCount < adapterSize)
-        {
-            for (int i = childCount; i < adapterSize; i++)
-            {
-                addView(i);
-            }
-        }
-        else if (childCount > adapterSize)
-        {
-            removeViews(adapterSize, childCount);
         }
     }
 

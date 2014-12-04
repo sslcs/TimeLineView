@@ -22,7 +22,7 @@ public class MainActivity extends FragmentActivity implements TimeLineFragment.R
     {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.container, fragment,"TL");
+        ft.replace(R.id.container, fragment);
         ft.commit();
     }
 
@@ -31,22 +31,8 @@ public class MainActivity extends FragmentActivity implements TimeLineFragment.R
     {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.hide(fm.findFragmentByTag("TL"));
         ft.replace(R.id.container, TestFragment.newInstance("TEST"));
         ft.addToBackStack(null);
         ft.commit();
-    }
-
-    @Override
-    public void onBackPressed()
-    {
-        FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentByTag("TL");
-        if(fragment != null)
-        {
-            System.out.println("MainActivity.onBackPressed "+ fragment.isVisible());
-        }
-
-        super.onBackPressed();
     }
 }
